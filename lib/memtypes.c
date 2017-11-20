@@ -157,6 +157,8 @@ struct memory_list memory_list_bgp[] =
   { MTYPE_BGP_REGEXP,		"BGP regexp"			},
   { MTYPE_BGP_AGGREGATE,	"BGP aggregate"			},
   { MTYPE_BGP_ADDR,		"BGP own address"		},
+  { MTYPE_BGP_RPKI_CACHE,       "RPKI cache"                    },
+  { MTYPE_BGP_RPKI_CACHE_GROUP, "RPKI cache group"              },
   { MTYPE_ENCAP_TLV,		"ENCAP TLV",			},
   { MTYPE_LCOMMUNITY,           "Large Community",              },
   { MTYPE_LCOMMUNITY_STR,       "Large Community str",          },

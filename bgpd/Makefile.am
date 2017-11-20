@@ -10,6 +10,11 @@ noinst_LIBRARIES = libbgp.a
 sbin_PROGRAMS = bgpd
 bin_PROGRAMS = bgp_btoa
 
+if HAVE_RPKI
+rpkisrc = bgp_rpki.c bgp_rpki_commands.c
+rpkiheader = bgp_rpki.h bgp_rpki_commands.h
+endif
+
 libbgp_a_SOURCES = \
 	bgpd.c bgp_fsm.c bgp_aspath.c bgp_community.c bgp_attr.c \
 	bgp_debug.c bgp_route.c bgp_zebra.c bgp_open.c bgp_routemap.c \
@@ -17,7 +22,8 @@ libbgp_a_SOURCES = \
 	bgp_dump.c bgp_snmp.c bgp_ecommunity.c bgp_lcommunity.c \
 	bgp_mplsvpn.c bgp_nexthop.c \
 	bgp_damp.c bgp_table.c bgp_advertise.c bgp_vty.c bgp_mpath.c \
-	bgp_encap.c bgp_encap_tlv.c bgp_nht.c
+	bgp_encap.c bgp_encap_tlv.c bgp_nht.c \
+	$(rpkisrc)
 
 noinst_HEADERS = \
 	bgp_aspath.h bgp_attr.h bgp_community.h bgp_debug.h bgp_fsm.h \
@@ -26,7 +32,8 @@ noinst_HEADERS = \
 	bgp_ecommunity.h bgp_lcommunity.h \
 	bgp_mplsvpn.h bgp_nexthop.h bgp_damp.h bgp_table.h \
 	bgp_advertise.h bgp_snmp.h bgp_vty.h bgp_mpath.h \
-	bgp_encap.h bgp_encap_tlv.h bgp_encap_types.h bgp_nht.h
+	bgp_encap.h bgp_encap_tlv.h bgp_encap_types.h bgp_nht.h \
+	$(rpkiheader)
 
 bgpd_SOURCES = bgp_main.c
 bgpd_LDADD = libbgp.a ../lib/libzebra.la @LIBCAP@ @LIBM@

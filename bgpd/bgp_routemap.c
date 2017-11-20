@@ -53,6 +53,7 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include "bgpd/bgp_ecommunity.h"
 #include "bgpd/bgp_lcommunity.h"
 #include "bgpd/bgp_vty.h"
+#include "bgpd/bgp_rpki.h"
 
 /* Memo of route-map commands.
 
@@ -3377,6 +3378,47 @@ ALIAS (no_match_origin,
        "local IGP\n"
        "unknown heritage\n")
 
+#ifdef HAVE_RPKI
+DEFUN (match_rpki,
+   match_rpki_cmd,
+       "match rpki (valid|invalid|notfound)",
+       MATCH_STR
+       "Match rpki prefix status\n"
+       "prefix is valid \n"
+       "prefix is invalid \n"
+       "prefix is not found \n")
+{
+  rpki_set_route_map_active(1);
+  if (strcmp (argv[0], "valid") == 0)
+    return bgp_route_match_add (vty, vty->index, "rpki", "valid");
+  if (strcmp (argv[0], "invalid") == 0)
+    return bgp_route_match_add (vty, vty->index, "rpki", "invalid");
+  if (strcmp (argv[0], "notfound") == 0)
+    return bgp_route_match_add (vty, vty->index, "rpki", "notfound");
+  return CMD_WARNING;
+}
+
+DEFUN (no_match_rpki,
+       no_match_rpki_cmd,
+       "no match rpki (valid|invalid|notfound)",
+       NO_STR
+       MATCH_STR
+       "Match rpki prefix status\n"
+       "prefix is valid \n"
+       "prefix is invalid \n"
+       "prefix is not found \n")
+{
+  rpki_set_route_map_active(1);
+  if (strcmp (argv[0], "valid") == 0)
+    return bgp_route_match_delete (vty, vty->index, "rpki", "valid");
+  if (strcmp (argv[0], "invalid") == 0)
+    return bgp_route_match_delete (vty, vty->index, "rpki", "invalid");
+  if (strcmp (argv[0], "notfound") == 0)
+    return bgp_route_match_delete (vty, vty->index, "rpki", "notfound");
+  return CMD_WARNING;
+}
+#endif
+
 DEFUN (match_tag,
        match_tag_cmd,
        "match tag <1-4294967295>",
@@ -4590,6 +4632,10 @@ bgp_route_map_init (void)
   install_element (RMAP_NODE, &match_probability_cmd);
   install_element (RMAP_NODE, &no_match_probability_cmd);
   install_element (RMAP_NODE, &no_match_probability_val_cmd);
+#ifdef HAVE_RPKI
+  install_element (RMAP_NODE, &match_rpki_cmd);
+  install_element (RMAP_NODE, &no_match_rpki_cmd);
+#endif
   install_element (RMAP_NODE, &match_tag_cmd);
   install_element (RMAP_NODE, &no_match_tag_cmd);
   install_element (RMAP_NODE, &no_match_tag_val_cmd);

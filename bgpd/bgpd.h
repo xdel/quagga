@@ -125,9 +125,11 @@ struct bgp
 #define BGP_FLAG_ASPATH_MULTIPATH_RELAX   (1 << 14)
 #define BGP_FLAG_DELETING                 (1 << 15)
 #define BGP_FLAG_RR_ALLOW_OUTBOUND_POLICY (1 << 16)
+#define BGP_FLAG_VALIDATE_DISABLE         (1 << 17)
+#define BGP_FLAG_DISALLOW_INVALID         (1 << 18)
 
   /* BGP Per AF flags */
-  u_int16_t af_flags[AFI_MAX][SAFI_MAX];
+  u_int32_t af_flags[AFI_MAX][SAFI_MAX];
 #define BGP_CONFIG_DAMPENING              (1 << 0)
 
   /* Static route configuration.  */

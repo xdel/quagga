@@ -353,6 +353,8 @@ AC_ARG_ENABLE(fpm,
   AS_HELP_STRING([--enable-fpm], [enable Forwarding Plane Manager support]))
 AC_ARG_ENABLE(werror,
   AS_HELP_STRING([--enable-werror], [enable -Werror (recommended for developers only)]))
+AC_ARG_ENABLE(rpki,
+  AS_HELP_STRING([--enable-rpki],  [enable RPKI prefix validation support]))
 AC_ARG_ENABLE([protobuf],
   AS_HELP_STRING([--enable-protobuf], [Enable experimental protobuf support]))
 
@@ -1648,6 +1650,20 @@ dnl allow deprecated interfaces to
 dnl be exposed.
 dnl -------------------------------
 AC_DEFINE(QUAGGA_NO_DEPRECATED_INTERFACES, 1, Hide deprecated interfaces)
+
+dnl ------------------------------------
+dnl Enable RPKI and add librtr to libs
+dnl ------------------------------------
+if test "${enable_rpki}" = "yes"; then
+  PKG_CHECK_MODULES(RTRLIB,[rtrlib >= 0.3.6],
+      [AC_DEFINE(HAVE_RPKI,1,Enable RPKI prefix validation for BGP)
+      RPKI=true
+      LIBS="$LIBS $RTRLIB_LIBS"
+      CFLAGS="$CFLAGS $RTRLIB_CFLAGS"],
+    [RPKI=false AC_MSG_ERROR([librtr was not found on your system, which is needed by rpki prefix
+    validation.])])
+fi
+AM_CONDITIONAL([HAVE_RPKI], test "x$RPKI" = "xtrue")
 
 dnl ---------------------------
 dnl Check htonl works correctly

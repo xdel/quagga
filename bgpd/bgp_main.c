@@ -52,6 +52,10 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include "bgpd/bgp_filter.h"
 #include "bgpd/bgp_zebra.h"
 
+#ifdef HAVE_RPKI
+#include "bgpd/bgp_rpki.h"
+#endif
+
 /* bgpd options, we use GNU getopt library. */
 static const struct option longopts[] = 
 {
@@ -291,6 +295,11 @@ bgp_exit (int status)
   /* reverse bgp_route_map_init/route_map_init */
   route_map_finish ();
 
+  /* reverse bgp_rpki_init  */
+#ifdef HAVE_RPKI
+  rpki_finish();
+#endif
+
   /* reverse access_list_init */
   access_list_add_hook (NULL);
   access_list_delete_hook (NULL);
@@ -456,6 +465,10 @@ main (int argc, char **argv)
   /* BGP related initialization.  */
   bgp_init ();
 
+  #ifdef HAVE_RPKI
+  rpki_init();
+  #endif
+
   /* Parse config file. */
   vty_read_config (config_file, config_default);
 
@@ -476,6 +489,11 @@ main (int argc, char **argv)
 
   /* Make bgp vty socket. */
   vty_serv_sock (vty_addr, vty_port, BGP_VTYSH_PATH);
+
+  /* Start rpki protocol to get validated prefix data */
+  #ifdef HAVE_RPKI
+  rpki_start();
+  #endif
 
   /* Print banner. */
   zlog_notice ("BGPd %s starting: vty@%d, bgp@%s:%d pid %d", QUAGGA_VERSION,

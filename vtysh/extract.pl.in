@@ -69,6 +69,7 @@ $ignore{'"who"'} = "ignore";
 $ignore{'"terminal monitor"'} = "ignore";
 $ignore{'"terminal no monitor"'} = "ignore";
 $ignore{'"show history"'} = "ignore";
+$ignore{'"enable-rpki"'} = "ignore";
 
 my $cli_stomp = 0;
 
